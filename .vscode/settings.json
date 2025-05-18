@@ -1,0 +1,40 @@
+{
+  // === General ===
+  "workbench.colorTheme": "Gruvbox Dark Medium",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.tips.enabled": false,
+  "workbench.startupEditor": "none",
+  "workbench.editor.showTabs": "single",
+  "workbench.activityBar.location": "hidden",
+  "workbench.sideBar.location": "right",
+  "workbench.statusBar.visible": false,
+
+  // === Screen ===
+  "window.zoomLevel": 2,
+  "workbench.tree.indent": 14,
+  "editor.tabSize": 4,
+  "editor.fontFamily": "JetBrainsMono Nerd Font",
+  "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+
+  // === Interface ===
+  "breadcrumbs.enabled": false,
+  "editor.scrollbar.horizontal": "hidden",
+  "editor.scrollbar.vertical": "hidden",
+  "editor.minimap.enabled": false,
+  "editor.matchBrackets": "never",
+  "editor.occurrencesHighlight": "off",
+  "editor.overviewRulerBorder": false,
+  "editor.hideCursorInOverviewRuler": true,
+  "editor.stickyScroll.enabled": false,
+  "window.commandCenter": false,
+  "workbench.layoutControl.enabled": false,
+ "chat.commandCenter.enabled": false,
+
+  // === Security ===
+  "explorer.confirmDragAndDrop": true,
+  "explorer.confirmDelete": true,
+
+  // === Autosave ===
+  "files.autoSave": "afterDelay",
+
+}

@@ -1,0 +1,19 @@
+{
+  "Template for Olympiad": {
+    "prefix": "tpl",
+    "body": [
+      "#include <bits/stdc++.h>",
+      "using namespace std;",
+      "",
+      "int main() {",
+      "    ios_base::sync_with_stdio(false);",
+      "    cin.tie(nullptr);",
+      "",
+      "    // your code here",
+      "",
+      "    return 0;",
+      "}"
+    ],
+    "description": "Шаблон для олимпиад по C++"
+  }
+}
