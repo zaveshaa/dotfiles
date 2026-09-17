@@ -1,0 +1,99 @@
+set nocompatible
+filetype plugin indent on
+syntax on
+
+set backspace=indent,eol,start
+set hidden
+set number
+set relativenumber
+set cursorline
+set autoindent
+set nowrap
+set scrolloff=5
+set splitright
+set splitbelow
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set hlsearch
+set incsearch
+set path+=**
+set mouse=a
+
+set wildmenu
+set wildignorecase
+set wildignore=*.o,*.obj,*.a,*.so,*.d
+
+let mapleader=','
+
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+nnoremap <C-S-h> <C-w>H
+nnoremap <C-S-j> <C-w>J
+nnoremap <C-S-k> <C-w>K
+nnoremap <C-S-l> <C-w>L
+
+nnoremap <Leader>e :Lexplore<CR>
+nnoremap <Leader>E :Lexplore <C-r>=expand('%:p:h')<CR><CR>
+nnoremap <Leader>w :bd<CR>
+nnoremap <Leader>b :b#<CR>
+
+nnoremap <Leader>m :make<CR>
+nnoremap <Leader>c :!clear && gcc -Wall -Wextra %:p -o /tmp/vimrun && /tmp/vimrun<CR>
+nnoremap <Leader>r :!clear && /tmp/vimrun<CR>
+nnoremap <Leader>n :cnext<CR>
+nnoremap <Leader>p :cprev<CR>
+
+nnoremap <C-]> g<C-]>
+nnoremap <Leader>t <C-t>
+
+nnoremap <Leader><Space> :nohlsearch<CR>
+
+nnoremap <Leader>s :w<CR>
+cnoreabbrev w!! w !sudo tee > /dev/null %
+
+autocmd BufWritePre * :%s/\s\+$//e
+
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_winsize = 25
+let g:netrw_altv = 1
+let g:netrw_fastbrowse = 2
+let g:netrw_sort_sequence = '[\/]$,*'
+autocmd FileType netrw setl bufhidden=delete
+
+set cindent
+set cinoptions+=t0,g0,N-s
+
+function! ShowCheat()
+  if bufloaded('vim-cheat') | execute 'buffer vim-cheat' | return | endif
+  vnew vim-cheat
+  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+  setlocal nonumber norelativenumber cursorline
+  nnoremap <buffer> q :bdelete<CR>
+  let lines = [
+      \ '',
+      \ '  VIM  C/C++  CONFIG',
+      \ '  ' . repeat('=', 44),
+      \ '',
+      \ '  ,e      explorer  on/off        ,E   explorer here',
+      \ '  ,w      close buffer            ,b   last buffer',
+      \ '  ,s      save                    ,m   make',
+      \ '  ,c      gcc compile + run       ,r   rerun',
+      \ '  ,n ,p   next/prev error         ,t   jump back (tags)',
+      \ '  ,Space  no highlight            Ctrl+]  go to definition',
+      \ '',
+      \ '  Ctrl+h/j/k/l   move window      Ctrl+Shift+h/j/k/l  move window',
+      \ '',
+      \ '  q  close this help',
+      \ ]
+  call setline(1, lines)
+  setlocal nomodifiable nomodified
+  normal G
+endfunction
+nnoremap ,h :call ShowCheat()<CR>
+autocmd VimEnter * if argc()==0 | call ShowCheat() | endif
