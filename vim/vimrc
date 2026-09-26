@@ -2,11 +2,20 @@ set nocompatible
 filetype plugin indent on
 syntax on
 
+" --- оформление: тот же шрифт/цвета, что в kitty и nvim ---
+set termguicolors
+set background=light
+colorscheme mono
+set listchars+=tab:»\ ,trail:·,extends:›,precedes:‹
+set fillchars=fold:\ ,foldopen:\ ,foldclose:\ ,diff:-
+
+
 set backspace=indent,eol,start
 set hidden
 set number
 set relativenumber
 set cursorline
+
 set autoindent
 set nowrap
 set scrolloff=5
@@ -24,7 +33,9 @@ set wildmenu
 set wildignorecase
 set wildignore=*.o,*.obj,*.a,*.so,*.d
 
-let mapleader=','
+" --- leader: пробел, как в nvim (LazyVim) ---
+let mapleader=" "
+set timeoutlen=400
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -36,23 +47,42 @@ nnoremap <C-S-j> <C-w>J
 nnoremap <C-S-k> <C-w>K
 nnoremap <C-S-l> <C-w>L
 
-nnoremap <Leader>e :Lexplore<CR>
-nnoremap <Leader>E :Lexplore <C-r>=expand('%:p:h')<CR><CR>
-nnoremap <Leader>w :bd<CR>
-nnoremap <Leader>b :b#<CR>
+" файлы (те же клавиши, что <Space>ff / <Space>fg в nvim)
+nnoremap <leader>ff :find <Tab>
+nnoremap <leader>fg :grep <C-r><C-w><CR>
+nnoremap <leader>sg :vimgrep /<C-r><C-w>/j .<CR>
+nnoremap <leader>fe :Lexplore<CR>
+nnoremap <leader>e  :Lexplore<CR>
+nnoremap <leader>E  :Lexplore <C-r>=expand('%:p:h')<CR><CR>
+nnoremap <C-s> :w<CR>
+nnoremap <leader>w  :w<CR>
+nnoremap <leader>q  :q<CR>
+nnoremap <leader>qa :qa<CR>
+nnoremap <leader>qq :qa<CR>
 
-nnoremap <Leader>m :make<CR>
-nnoremap <Leader>c :!clear && gcc -Wall -Wextra %:p -o /tmp/vimrun && /tmp/vimrun<CR>
-nnoremap <Leader>r :!clear && /tmp/vimrun<CR>
-nnoremap <Leader>n :cnext<CR>
-nnoremap <Leader>p :cprev<CR>
+" буферы
+nnoremap <leader>b  :b#<CR>
+nnoremap <leader>bp :b#<CR>
+nnoremap <leader>bl :buffers<CR>
+nnoremap <leader>bd :bd<CR>
+
+" сборка и запуск
+nnoremap <leader>m  :make<CR>
+nnoremap <leader>cc :!clear && gcc -Wall -Wextra %:p -o /tmp/vimrun && /tmp/vimrun<CR>
+nnoremap <leader>r  :!clear && /tmp/vimrun<CR>
+
+" ошибки и диагностика
+nnoremap <leader>n  :cnext<CR>
+nnoremap <leader>p  :cprev<CR>
+nnoremap <leader>cd :copen<CR>
+nnoremap <leader>cq :cclose<CR>
+nnoremap <leader>us :set spell<CR>
 
 nnoremap <C-]> g<C-]>
-nnoremap <Leader>t <C-t>
+nnoremap <leader>t <C-t>
 
-nnoremap <Leader><Space> :nohlsearch<CR>
+nnoremap <leader><Space> :nohlsearch<CR>
 
-nnoremap <Leader>s :w<CR>
 cnoreabbrev w!! w !sudo tee > /dev/null %
 
 autocmd BufWritePre * :%s/\s\+$//e
@@ -77,23 +107,33 @@ function! ShowCheat()
   nnoremap <buffer> q :bdelete<CR>
   let lines = [
       \ '',
-      \ '  VIM  C/C++  CONFIG',
-      \ '  ' . repeat('=', 44),
+      \ '  VIM  C/C++  CONFIG          (leader = пробел, как в nvim)',
+      \ '  ' . repeat('=', 52),
       \ '',
-      \ '  ,e      explorer  on/off        ,E   explorer here',
-      \ '  ,w      close buffer            ,b   last buffer',
-      \ '  ,s      save                    ,m   make',
-      \ '  ,c      gcc compile + run       ,r   rerun',
-      \ '  ,n ,p   next/prev error         ,t   jump back (tags)',
-      \ '  ,Space  no highlight            Ctrl+]  go to definition',
+      \ '  ff  открыть файл по имени     fg  grep по слову под курсором',
+      \ '  sg  vimgrep по слову            e   explorer  on/off',
+      \ '  fe  explorer                    E   explorer в текущей папке',
+      \ '  w   сохранить (и Ctrl+s)        q   выйти',
+      \ '  b   предыдущий буфер             bl  список буферов',
+      \ '  bd  закрыть буфер               qq  выйти из всех',
       \ '',
-      \ '  Ctrl+h/j/k/l   move window      Ctrl+Shift+h/j/k/l  move window',
+      \ '  m   make                       cc  gcc compile + run',
+      \ '  r   rerun                      n / p  след./пред. ошибка',
+      \ '  cd  ошибки (copen)            cq  закрыть список ошибок',
+      \ '  us  spell',
       \ '',
-      \ '  q  close this help',
+      \ '  Space Space  убрать подсветку  t   назад по тегам',
+      \ '  Ctrl+]  к определению',
+      \ '',
+      \ '  Ctrl+h/j/k/l    окна          Ctrl+Shift+h/j/k/l  окна во весь экран',
+      \ '',
+      \ '  h  эта справка   ?  тоже      q  закрыть её',
+      \ '  полная шпаргалка: ~/.config/HOTKEYS.md',
       \ ]
   call setline(1, lines)
   setlocal nomodifiable nomodified
   normal G
 endfunction
-nnoremap ,h :call ShowCheat()<CR>
+nnoremap <leader>h  :call ShowCheat()<CR>
+nnoremap <leader>?  :call ShowCheat()<CR>
 autocmd VimEnter * if argc()==0 | call ShowCheat() | endif

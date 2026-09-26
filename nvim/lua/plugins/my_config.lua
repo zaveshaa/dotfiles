@@ -1,20 +1,10 @@
 return {
-  -- 1. GitHub Light Theme
+  -- 1. Своя тема: colors/mono.lua
   {
-    "projekt0n/github-nvim-theme",
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("github-theme").setup({
-        options = {
-          darken = {
-            sidebars = { "qf", "terminal", "neo-tree" },
-          },
-        },
-      })
-      vim.cmd("colorscheme github_light")
-    end,
+    "LazyVim/LazyVim",
+    opts = { colorscheme = "mono" },
   },
+  { "ellisonleao/gruvbox.nvim", enabled = false },
 
   -- 2. Org-mode
   {
