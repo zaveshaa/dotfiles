@@ -2,13 +2,11 @@ set nocompatible
 filetype plugin indent on
 syntax on
 
-" --- оформление: тот же шрифт/цвета, что в kitty и nvim ---
 set termguicolors
 set background=light
 colorscheme mono
 set listchars+=tab:»\ ,trail:·,extends:›,precedes:‹
 set fillchars=fold:\ ,foldopen:\ ,foldclose:\ ,diff:-
-
 
 set backspace=indent,eol,start
 set hidden
@@ -33,7 +31,6 @@ set wildmenu
 set wildignorecase
 set wildignore=*.o,*.obj,*.a,*.so,*.d
 
-" --- leader: пробел, как в nvim (LazyVim) ---
 let mapleader=" "
 set timeoutlen=400
 
@@ -47,7 +44,6 @@ nnoremap <C-S-j> <C-w>J
 nnoremap <C-S-k> <C-w>K
 nnoremap <C-S-l> <C-w>L
 
-" файлы (те же клавиши, что <Space>ff / <Space>fg в nvim)
 nnoremap <leader>ff :find <Tab>
 nnoremap <leader>fg :grep <C-r><C-w><CR>
 nnoremap <leader>sg :vimgrep /<C-r><C-w>/j .<CR>
@@ -60,18 +56,15 @@ nnoremap <leader>q  :q<CR>
 nnoremap <leader>qa :qa<CR>
 nnoremap <leader>qq :qa<CR>
 
-" буферы
 nnoremap <leader>b  :b#<CR>
 nnoremap <leader>bp :b#<CR>
 nnoremap <leader>bl :buffers<CR>
 nnoremap <leader>bd :bd<CR>
 
-" сборка и запуск
 nnoremap <leader>m  :make<CR>
 nnoremap <leader>cc :!clear && gcc -Wall -Wextra %:p -o /tmp/vimrun && /tmp/vimrun<CR>
 nnoremap <leader>r  :!clear && /tmp/vimrun<CR>
 
-" ошибки и диагностика
 nnoremap <leader>n  :cnext<CR>
 nnoremap <leader>p  :cprev<CR>
 nnoremap <leader>cd :copen<CR>

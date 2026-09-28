@@ -1,12 +1,5 @@
-" mono.vim — светлая тема, интерфейс серый, синтаксис блеклый.
-" Оформление текста: только цвет, без жирного и подчёркивания.
-" Палитра синтаксиса — в colors/mono_syntax.vim.
-"     :colorscheme mono
-
 set background=light
 
-" --- базовые цвета ---
-" #1a1a1a текст, #ffffff фон, #8c8c8c приглушённый, #3d3d3d усиленный
 let s:fg   = 'guifg=#1a1a1a'
 let s:dim  = 'guifg=#8c8c8c ctermfg=12'
 let s:strong = 'guifg=#3d3d3d'
@@ -16,7 +9,6 @@ let s:mbg  = 'guibg=#ededed ctermbg=15'
 let s:sel  = 'guibg=#dcdcdc ctermbg=14'
 let s:inv  = 'guifg=#ffffff guibg=#000000 ctermfg=15 ctermbg=0'
 
-" --- интерфейс ---
 execute 'hi Normal        ' . s:fg . ' ' . s:bg . ' ctermfg=1 ctermbg=15'
 execute 'hi NormalNC      ' . s:fg . ' ' . s:bg
 execute 'hi NormalFloat   ' . s:fg . ' ' . s:mbg
@@ -88,5 +80,4 @@ execute 'hi LspReferenceRead ' . s:fg . ' ' . s:mbg
 execute 'hi LspInlayHint  ' . s:dim . ' gui=italic'
 execute 'hi LspSignatureActiveParameter ' . s:fg . ' gui=bold'
 
-" цвета синтаксиса живут отдельно (см. colors/mono_syntax.vim)
 runtime! colors/mono_syntax.vim

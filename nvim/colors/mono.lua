@@ -1,29 +1,20 @@
--- mono.lua — светлая тема для Neovim с блеклыми (приглушёнными) цветами.
--- Белый фон, интерфейс почти серый, синтаксис — мягкие тона:
--- насыщенность низкая, светлота высокая. Видно, но не «кричит».
--- Стилей нет: ни жирного, ни подчёркивания, только цвет.
-
 local M = {}
 
--- ---------------------------------------------------------------------------
--- палитра
--- ---------------------------------------------------------------------------
 local p = {
-  fg = "#1a1a1a", -- основной текст
-  bg = "#ffffff", -- фон
-  strong = "#3d3d3d", -- усиленный текст
-  mid = "#5f5f5f", -- средний серый (переменные, поля)
-  soft = "#767676", -- мягкий серый (знаки, пунктуация)
-  dim = "#9a9a9a", -- приглушённый текст (комментарии)
-  faint = "#b3b3b3", -- совсем приглушённый (нетекстовые символы)
-  line = "#f0f0f0", -- фон строк (CursorLine, StatusLine)
-  sel = "#dcdcdc", -- выделение
-  sel2 = "#c9c9c9", -- выделение/акцент посильнее
+  fg = "#1a1a1a",
+  bg = "#ffffff",
+  strong = "#3d3d3d",
+  mid = "#5f5f5f",
+  soft = "#767676",
+  dim = "#9a9a9a",
+  faint = "#b3b3b3",
+  line = "#f0f0f0",
+  sel = "#dcdcdc",
+  sel2 = "#c9c9c9",
   white = "#ffffff",
   black = "#000000",
 }
 
--- серая шкала: к ней притягиваются серые цвета (см. M.snap)
 local steps = {
   "#0f0f0f",
   "#1a1a1a",
@@ -65,12 +56,6 @@ local function luma(hexstr)
   return 0.299 * r + 0.587 * g + 0.114 * b
 end
 
---- привести цвет к блеклому: сохраняем оттенок, гасим насыщенность,
---- светлоту держим в мягком диапазоне. Идемпотентна: повторный вызов
---- ничего не меняет, поэтому M.clamp можно звать сколько угодно раз.
----@param hexstr string|nil
----@param light boolean|nil true — только светлые тона (для фона)
----@return string|nil
 function M.snap(hexstr, light)
   if type(hexstr) ~= "string" or not hexstr:match("^#%x%x%x%x%x%x$") then
     return hexstr
@@ -82,7 +67,6 @@ function M.snap(hexstr, light)
   local sat = mx - mn
   local l = (mx + mn) / 2
 
-  -- чисто серый — оставляем серым, притягивая к серой шкале по светлоте
   if sat < 0.03 then
     local target = luma(hexstr)
     local best, bestd
@@ -98,7 +82,6 @@ function M.snap(hexstr, light)
     return best
   end
 
-  -- оттенок: сохраняем
   local h
   if mx == mn then
     h = 0
@@ -114,15 +97,12 @@ function M.snap(hexstr, light)
     h = h / 6
   end
 
-  -- насыщенность и светлота: зажимаем в фиксированный «блеклый» диапазон
-  -- S нормируем через L, иначе обратное преобразование «плывёт» по кругу
   local ll = light and math.max(0.92, math.min(1, l)) or math.max(0.44, math.min(0.70, l))
   local range = 1 - math.abs(2 * ll - 1)
   local hslSat = range > 0.001 and (sat / range) or 0
   local maxSat = light and 0.10 or 0.20
   local s = math.min(hslSat, maxSat)
 
-  -- HSL -> RGB
   local function hue2rgb(p1, p2, t)
     if t < 0 then
       t = t + 1
@@ -156,14 +136,10 @@ function M.snap(hexstr, light)
   )
 end
 
--- ---------------------------------------------------------------------------
--- хелперы
--- ---------------------------------------------------------------------------
 local function hl(group, value)
   vim.api.nvim_set_hl(0, group, value)
 end
 
---- очистить группы и задать заново
 local function only(groups, value)
   for _, g in ipairs(groups) do
     hl(g, {})
@@ -175,7 +151,6 @@ local function only(groups, value)
   end
 end
 
---- перекрасить существующие группы в заданный цвет
 local function flat(groups, fg)
   for _, g in ipairs(groups) do
     if vim.fn.hlexists(g) == 1 then
@@ -190,9 +165,6 @@ local function flat(groups, fg)
   end
 end
 
--- ---------------------------------------------------------------------------
--- интерфейс
--- ---------------------------------------------------------------------------
 local function base()
   vim.g.colors_name = "mono"
   vim.opt.background = "light"
@@ -281,27 +253,21 @@ local function base()
   hl("healthHelp", { fg = p.dim })
 end
 
--- ---------------------------------------------------------------------------
--- синтаксис
--- ---------------------------------------------------------------------------
--- блеклые тона: насыщенность низкая, светлота высокая, на белом фоне
--- читается, но не «кричит» — только цвет, без жирного и подчёркиваний
-local dim = { fg = "#9aa4ab" } -- комментарии, разметка
-local soft = { fg = "#8b939a" } -- пунктуация, скобки
-local mid = { fg = "#788088" } -- переменные, поля
-local var = { fg = "#67717c" } -- параметры, обычные имена
-local key = { fg = "#6b76c4" } -- ключевые слова — бледно-сиреневый
-local type_ = { fg = "#4e9c90" } -- типы, классы — бледно-бирюзовый
-local str = { fg = "#c2843f" } -- строки — бледно-охра
-local num = { fg = "#9a6ac0" } -- числа, константы — бледно-фиолетовый
-local fn = { fg = "#4189c4" } -- функции — бледно-голубой
-local deco = { fg = "#c67fa4" } -- декораторы, аннотации
-local ctrl = { fg = "#6f79cc" } -- управляющие конструкции
-local strong = { fg = p.strong } -- общий «посветлее основного»
-local under = { fg = p.fg, underline = true } -- не используется
+local dim = { fg = "#9aa4ab" }
+local soft = { fg = "#8b939a" }
+local mid = { fg = "#788088" }
+local var = { fg = "#67717c" }
+local key = { fg = "#6b76c4" }
+local type_ = { fg = "#4e9c90" }
+local str = { fg = "#c2843f" }
+local num = { fg = "#9a6ac0" }
+local fn = { fg = "#4189c4" }
+local deco = { fg = "#c67fa4" }
+local ctrl = { fg = "#6f79cc" }
+local strong = { fg = p.strong }
+local under = { fg = p.fg, underline = true }
 
 local function syntax()
-  -- выкидываем всё, что нарисовала предыдущая тема
   for name in pairs(vim.api.nvim_get_hl(0, {})) do
     if name:sub(1, 1) == "@" then
       hl(name, {})
@@ -341,7 +307,6 @@ local function syntax()
     "Error",
   })
 
-  -- 1) комментарии и разметка
   only({
     "@comment",
     "@comment.documentation",
@@ -384,7 +349,6 @@ local function syntax()
   hl("@comment.error", { fg = "#c95f5f" })
   hl("@comment.warning", { fg = "#c9a03c" })
 
-  -- 2a) ключевые слова и управляющие конструкции
   only({
     "@keyword",
     "@keyword.conditional",
@@ -407,7 +371,6 @@ local function syntax()
     "@define",
     "@debug",
   }, ctrl)
-  -- 2b) типы, классы, структуры
   only({
     "@type",
     "@type.builtin",
@@ -419,14 +382,12 @@ local function syntax()
     "@attribute",
     "@label.guid",
   }, deco)
-  -- 2c) строки
   only({
     "@string",
     "@string.special",
     "@character",
   }, str)
   hl("@string.escape", { fg = "#c9822f" })
-  -- 2d) числа, константы, логические значения
   only({
     "@constant",
     "@constant.builtin",
@@ -436,7 +397,6 @@ local function syntax()
     "@boolean",
   }, num)
 
-  -- 3) функции и ссылки
   only({
     "@function",
     "@function.builtin",
@@ -455,9 +415,6 @@ local function syntax()
     "@tag.delimiter",
   }, fn)
 
-  -- всё, что мы не перечислили, остаётся пустым и рисуется как обычный текст
-
-  -- классический syntax (для встроенного vim syntax) — те же блеклые тона
   hl("Comment", dim)
   hl("SpecialComment", dim)
   hl("String", str)
@@ -491,9 +448,6 @@ local function syntax()
   hl("Error", { fg = "#c95f5f" })
 end
 
--- ---------------------------------------------------------------------------
--- LSP и диагностика
--- ---------------------------------------------------------------------------
 local function lsp()
   only({
     "@lsp.type.class",
@@ -575,7 +529,6 @@ local function lsp()
   }, { fg = p.dim, strikethrough = false })
   hl("@lsp.mod.deprecated", { fg = p.dim, strikethrough = true })
 
-  -- диагностика
   hl("DiagnosticError", { fg = "#c95f5f" })
   hl("DiagnosticWarn", { fg = "#c9a03c" })
   hl("DiagnosticInfo", { fg = "#5f96c4" })
@@ -656,9 +609,6 @@ local function lsp()
   hl("LspInfoBorder", { fg = p.fg, bg = p.bg })
 end
 
--- ---------------------------------------------------------------------------
--- плагины
--- ---------------------------------------------------------------------------
 local function plugins()
   flat({
     "NormalSB",
@@ -672,7 +622,6 @@ local function plugins()
     "LineNrBelowCursorLine",
   }, p.dim)
 
-  -- gitsigns
   only({
     "GitSignsAdd",
     "GitSignsChange",
@@ -685,14 +634,12 @@ local function plugins()
   )
   flat({ "GitSignsAddLn", "GitSignsChangeLn", "GitSignsDeleteLn", "GitSignsCurrentLineBlame" }, p.dim)
 
-  -- mini.icons красит иконки в цвета — приводим к серому
   for name in pairs(vim.api.nvim_get_hl(0, {})) do
     if name:match("^MiniIcons") then
       hl(name, { fg = p.dim })
     end
   end
 
-  -- neo-tree: сначала всё в обычный цвет, потом точечные группы
   for name in pairs(vim.api.nvim_get_hl(0, {})) do
     if name:match("^NeoTree") then
       local cur = vim.api.nvim_get_hl(0, { name = name })
@@ -734,7 +681,6 @@ local function plugins()
     "NeoTreeGitUntracked",
   }, { fg = p.strong })
 
-  -- snacks.nvim (dashboard, picker, which-key, notifier)
   only({
     "SnacksNormal",
     "SnacksBackdrop",
@@ -781,7 +727,6 @@ local function plugins()
     "SnacksGitSignsUntracked",
   }, { fg = p.dim })
 
-  -- which-key / noice / trouble / telescope / lualine / bufferline / cmp
   for _, prefix in ipairs({
     "Telescope",
     "Noice",
@@ -812,9 +757,6 @@ local function plugins()
   end
 end
 
--- ---------------------------------------------------------------------------
--- терминал внутри nvim — те же цвета, что и в kitty
--- ---------------------------------------------------------------------------
 local function terminal()
   local ramp = {
     "#000000",
@@ -839,9 +781,6 @@ local function terminal()
   end
 end
 
--- ---------------------------------------------------------------------------
--- притянуть чужие цвета к палитре
--- ---------------------------------------------------------------------------
 function M.clamp()
   local all = vim.api.nvim_get_hl(0, {})
   for name, v in pairs(all) do
@@ -911,7 +850,6 @@ M.setup = function()
   refresh()
 end
 
--- применяем сразу: :colorscheme в этой версии nvim просто исполняет файл
 M.load = M.setup
 M.setup()
 
