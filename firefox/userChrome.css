@@ -1,0 +1,52 @@
+* {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+.tab-close-button {
+    display: flex !important;
+}
+
+#TabsToolbar .titlebar-buttonbox-container,
+#alltabs-button,
+#tabbrowser-arrowscrollbox-pertab {
+    display: none !important;
+}
+
+#urlbar-container {
+    max-width: unset !important;
+    margin: 4px 8px !important;
+    width: auto !important;
+    flex-grow: 1 !important;
+}
+
+#identity-box,
+#identity-permission-box,
+.urlbar-icon-wrapper[id*="identity"] {
+    display: none !important;
+}
+
+#forward-button,
+#stop-button,
+#home-button,
+#tracking-protection-icon-container,
+#pageActionButton,
+#star-button-box,
+#reader-mode-button,
+#PanelUI-menu-button,
+#nav-bar-overflow-button,
+#PersonalToolbar {
+    display: none !important;
+}
+
+#unified-extensions-button {
+    display: flex !important;
+    margin-right: 4px !important;
+}
+
+#urlbar .urlbarView,
+#urlbar-results,
+.urlbarView-results,
+.urlbarView-row,
+#urlbar-popups {
+    display: none !important;
+}
