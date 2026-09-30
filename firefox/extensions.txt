@@ -1,7 +1,0 @@
-uBlock Origin
-Browsec VPN
-Planet VPN
-Firefox Translations
-English (US) Dictionary
-Language: English (US)
-New Tab
