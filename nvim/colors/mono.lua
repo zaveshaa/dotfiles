@@ -3,38 +3,28 @@ local M = {}
 local p = {
   fg = "#1a1a1a",
   bg = "#ffffff",
-  strong = "#3d3d3d",
-  mid = "#5f5f5f",
-  soft = "#767676",
-  dim = "#9a9a9a",
-  faint = "#b3b3b3",
-  line = "#f0f0f0",
+  strong = "#333333",
+  mid = "#4a4a4a",
+  soft = "#6e6e6e",
+  dim = "#8a8a8a",
+  faint = "#adadad",
+  line = "#f2f2f2",
   sel = "#dcdcdc",
-  sel2 = "#c9c9c9",
+  sel2 = "#c4c4c4",
   white = "#ffffff",
   black = "#000000",
 }
 
-local steps = {
-  "#0f0f0f",
-  "#1a1a1a",
-  "#3d3d3d",
-  "#5f5f5f",
-  "#767676",
-  "#8c8c8c",
-  "#9a9a9a",
-  "#adadad",
-  "#b3b3b3",
-  "#c9c9c9",
-  "#d0d0d0",
-  "#dcdcdc",
-  "#e0e0e0",
-  "#e5e5e5",
-  "#eaeaea",
-  "#ededed",
-  "#f0f0f0",
-  "#ffffff",
-}
+-- монохром: 0 = убрать все оттенки, остаётся только яркость
+local SAT_FG = 0.00
+local SAT_BG = 0.00
+local GRAY_K = 1.00
+
+local steps = {}
+for i = 0, 63 do
+  local v = math.floor(i * 255 / 63 + 0.5)
+  steps[i + 1] = string.format("#%02x%02x%02x", v, v, v)
+end
 
 local function rgb(hex)
   local n = tonumber(hex:gsub("#", ""), 16)
@@ -56,9 +46,18 @@ local function luma(hexstr)
   return 0.299 * r + 0.587 * g + 0.114 * b
 end
 
+local snapcache = {}
+local snapped = {}
+
 function M.snap(hexstr, light)
   if type(hexstr) ~= "string" or not hexstr:match("^#%x%x%x%x%x%x$") then
     return hexstr
+  end
+
+  local key = (light and "L" or "D") .. hexstr
+  local cached = snapcache[key]
+  if cached then
+    return cached
   end
 
   local r, g, b = rgb(hexstr)
@@ -67,18 +66,26 @@ function M.snap(hexstr, light)
   local sat = mx - mn
   local l = (mx + mn) / 2
 
+  local dark = luma(hexstr) < 0.35 * 255
+
   if sat < 0.03 then
-    local target = luma(hexstr)
+    local t = luma(hexstr) / 255
+    if not light or dark then
+      t = 0.5 + (t - 0.5) * GRAY_K
+    end
+    local target = math.floor(math.max(0, math.min(1, t)) * 255 + 0.5)
     local best, bestd
     for _, st in ipairs(steps) do
       local sl = luma(st)
-      if not light or sl >= 0.8 * 255 then
+      if not light or dark or sl >= 0.8 * 255 then
         local d = math.abs(sl - target)
         if not bestd or d < bestd then
           best, bestd = st, d
         end
       end
     end
+    snapcache[key] = best
+    snapped[best] = true
     return best
   end
 
@@ -97,10 +104,17 @@ function M.snap(hexstr, light)
     h = h / 6
   end
 
-  local ll = light and math.max(0.92, math.min(1, l)) or math.max(0.44, math.min(0.70, l))
+  local ll
+  if light and not dark then
+    ll = math.max(0.90, math.min(1, l))
+  elseif light then
+    ll = math.max(0.10, math.min(0.30, l))
+  else
+    ll = math.max(0.16, math.min(0.74, l))
+  end
   local range = 1 - math.abs(2 * ll - 1)
   local hslSat = range > 0.001 and (sat / range) or 0
-  local maxSat = light and 0.10 or 0.20
+  local maxSat = light and SAT_BG or SAT_FG
   local s = math.min(hslSat, maxSat)
 
   local function hue2rgb(p1, p2, t)
@@ -129,11 +143,14 @@ function M.snap(hexstr, light)
     q = ll + s - ll * s
   end
   local pp = 2 * ll - q
-  return hex(
+  local out = hex(
     math.floor(hue2rgb(pp, q, h + 1 / 3) * 255 + 0.5),
     math.floor(hue2rgb(pp, q, h) * 255 + 0.5),
     math.floor(hue2rgb(pp, q, h - 1 / 3) * 255 + 0.5)
   )
+  snapcache[key] = out
+  snapped[out] = true
+  return out
 end
 
 local function hl(group, value)
@@ -253,17 +270,18 @@ local function base()
   hl("healthHelp", { fg = p.dim })
 end
 
-local dim = { fg = "#9aa4ab" }
-local soft = { fg = "#8b939a" }
-local mid = { fg = "#788088" }
-local var = { fg = "#67717c" }
-local key = { fg = "#6b76c4" }
-local type_ = { fg = "#4e9c90" }
-local str = { fg = "#c2843f" }
-local num = { fg = "#9a6ac0" }
-local fn = { fg = "#4189c4" }
-local deco = { fg = "#c67fa4" }
-local ctrl = { fg = "#6f79cc" }
+-- монохромная шкала: 000000 -> 8a8a8a
+local dim = { fg = "#8a8a8a" } -- комментарии
+local soft = { fg = "#8a8a8a" } -- пунктуация
+local mid = { fg = "#4a4a4a" }
+local var = { fg = "#333333" }
+local key = { fg = "#000000", bold = true } -- ключевые слова — чистый чёрный
+local type_ = { fg = "#262626" }
+local str = { fg = "#6e6e6e" }
+local num = { fg = "#5c5c5c" }
+local fn = { fg = "#1a1a1a", bold = true }
+local deco = { fg = "#7a7a7a" }
+local ctrl = { fg = "#262626" }
 local strong = { fg = p.strong }
 local under = { fg = p.fg, underline = true }
 
@@ -345,9 +363,9 @@ local function syntax()
     "@parameter.reference",
     "@none",
   }, mid)
-  hl("@comment.todo", { fg = "#c9822f" })
-  hl("@comment.error", { fg = "#c95f5f" })
-  hl("@comment.warning", { fg = "#c9a03c" })
+  hl("@comment.todo", { fg = "#4a4a4a" })
+  hl("@comment.error", { fg = "#000000", bold = true })
+  hl("@comment.warning", { fg = "#262626" })
 
   only({
     "@keyword",
@@ -387,7 +405,7 @@ local function syntax()
     "@string.special",
     "@character",
   }, str)
-  hl("@string.escape", { fg = "#c9822f" })
+  hl("@string.escape", { fg = "#4a4a4a" })
   only({
     "@constant",
     "@constant.builtin",
@@ -444,8 +462,8 @@ local function syntax()
   hl("Special", deco)
   hl("SpecialChar", deco)
   hl("Debug", ctrl)
-  hl("Todo", { fg = "#c9822f" })
-  hl("Error", { fg = "#c95f5f" })
+  hl("Todo", { fg = "#4a4a4a", bold = true })
+  hl("Error", { fg = "#000000", bold = true })
 end
 
 local function lsp()
@@ -529,11 +547,11 @@ local function lsp()
   }, { fg = p.dim, strikethrough = false })
   hl("@lsp.mod.deprecated", { fg = p.dim, strikethrough = true })
 
-  hl("DiagnosticError", { fg = "#c95f5f" })
-  hl("DiagnosticWarn", { fg = "#c9a03c" })
-  hl("DiagnosticInfo", { fg = "#5f96c4" })
-  hl("DiagnosticHint", { fg = "#6aab6f" })
-  hl("DiagnosticOk", { fg = "#6aab6f" })
+  hl("DiagnosticError", { fg = "#000000", bold = true })
+  hl("DiagnosticWarn", { fg = "#262626", bold = true })
+  hl("DiagnosticInfo", { fg = "#4a4a4a" })
+  hl("DiagnosticHint", { fg = "#6e6e6e" })
+  hl("DiagnosticOk", { fg = "#6e6e6e" })
   for _, g in ipairs({
     "DiagnosticUnnecessary",
     "DiagnosticDeprecated",
@@ -568,14 +586,14 @@ local function lsp()
     "DiagnosticFloatingError",
     "DiagnosticSignError",
     "DiagnosticUnderlineError",
-  }, { fg = "#c95f5f", sp = "#c95f5f" })
+  }, { fg = "#000000", sp = "#000000" })
   only({
     "DiagnosticVirtualTextWarn",
     "DiagnosticVirtualLinesWarn",
     "DiagnosticFloatingWarn",
     "DiagnosticSignWarn",
     "DiagnosticUnderlineWarn",
-  }, { fg = "#c9a03c", sp = "#c9a03c" })
+  }, { fg = "#262626", sp = "#262626" })
   for _, g in ipairs({
     "DiagnosticVirtualTextInfo",
     "DiagnosticVirtualLinesInfo",
@@ -583,7 +601,7 @@ local function lsp()
     "DiagnosticSignInfo",
     "DiagnosticUnderlineInfo",
   }) do
-    hl(g, { fg = "#5f96c4", sp = "#5f96c4" })
+    hl(g, { fg = "#4a4a4a", sp = "#4a4a4a" })
   end
   for _, g in ipairs({
     "DiagnosticVirtualTextHint",
@@ -597,14 +615,14 @@ local function lsp()
     "DiagnosticSignOk",
     "DiagnosticUnderlineOk",
   }) do
-    hl(g, { fg = "#6aab6f", sp = "#6aab6f" })
+    hl(g, { fg = "#6e6e6e", sp = "#6e6e6e" })
   end
   hl("LspCodeLens", { fg = p.dim })
   hl("LspInlayHint", { fg = p.dim, italic = true })
   hl("LspInfoList", { fg = p.fg })
   hl("LspReferenceText", { bg = p.line })
   hl("LspReferenceRead", { bg = p.line })
-  hl("LspSignatureActiveParameter", { fg = "#4e9c90" })
+  hl("LspSignatureActiveParameter", { fg = "#262626" })
   hl("LspCodeLensSeparator", { fg = p.dim })
   hl("LspInfoBorder", { fg = p.fg, bg = p.bg })
 end
@@ -622,16 +640,10 @@ local function plugins()
     "LineNrBelowCursorLine",
   }, p.dim)
 
-  only({
-    "GitSignsAdd",
-    "GitSignsChange",
-    "GitSignsDelete",
-    "GitSignsUntracked",
-  }, { fg = p.strong, bold = true })
-  only(
-    { "GitSignsAddNr", "GitSignsChangeNr", "GitSignsDeleteNr", "GitSignsUntrackedNr" },
-    { fg = p.strong, bold = true }
-  )
+  only({ "GitSignsAdd", "GitSignsAddNr" }, { fg = "#4a4a4a", bold = true })
+  only({ "GitSignsChange", "GitSignsChangeNr" }, { fg = "#262626", bold = true })
+  only({ "GitSignsDelete", "GitSignsDeleteNr" }, { fg = "#000000", bold = true })
+  only({ "GitSignsUntracked", "GitSignsUntrackedNr" }, { fg = "#6e6e6e", bold = true })
   flat({ "GitSignsAddLn", "GitSignsChangeLn", "GitSignsDeleteLn", "GitSignsCurrentLineBlame" }, p.dim)
 
   for name in pairs(vim.api.nvim_get_hl(0, {})) do
@@ -760,21 +772,21 @@ end
 local function terminal()
   local ramp = {
     "#000000",
-    "#1c1c1c",
-    "#333333",
-    "#4a4a4a",
-    "#616161",
-    "#7a7a7a",
-    "#949494",
-    "#adadad",
     "#242424",
     "#3d3d3d",
-    "#585858",
+    "#575757",
     "#737373",
     "#8f8f8f",
-    "#aaaaaa",
-    "#c4c4c4",
-    "#e0e0e0",
+    "#ababab",
+    "#c7c7c7",
+    "#1a1a1a",
+    "#333333",
+    "#4d4d4d",
+    "#666666",
+    "#808080",
+    "#9c9c9c",
+    "#b8b8b8",
+    "#d4d4d4",
   }
   for i, c in ipairs(ramp) do
     vim.g["terminal_color_" .. (i - 1)] = c
@@ -786,39 +798,32 @@ function M.clamp()
   for name, v in pairs(all) do
     local fg, bg, sp = v.fg, v.bg, v.sp
     if fg or bg then
+      local fgh = fg and ("#%06x"):format(fg) or nil
+      local bgh = bg and ("#%06x"):format(bg) or nil
+      local sph = sp and ("#%06x"):format(type(sp) == "table" and sp[1] or sp) or nil
+
       local st = { default = false, blend = v.blend }
-      local nf, nbg, nsp = fg, bg, sp
-      if fg then
-        nfg = M.snap(("#%06x"):format(fg))
-        st.fg = nfg
+      st.fg = fgh and (snapped[fgh] and fgh or M.snap(fgh)) or nil
+      st.bg = bgh and (snapped[bgh] and bgh or M.snap(bgh, true)) or nil
+      st.sp = sph and (snapped[sph] and sph or M.snap(sph)) or nil
+
+      if v.bold then
+        st.bold = true
       end
-      if bg then
-        nbg = M.snap(("#%06x"):format(bg), true)
-        st.bg = nbg
+      if v.italic then
+        st.italic = true
       end
-      if sp then
-        nsp = M.snap(("#%06x"):format(type(sp) == "table" and sp[1] or sp))
-        st.sp = nsp
+      if v.underline then
+        st.underline = true
       end
-      if nfg ~= fg or nbg ~= bg or nsp ~= sp then
-        if v.bold then
-          st.bold = true
-        end
-        if v.italic then
-          st.italic = true
-        end
-        if v.underline then
-          st.underline = true
-        end
-        if v.strikethrough then
-          st.strikethrough = true
-        end
-        if v.reverse then
-          st.reverse = true
-        end
-        st.cterm = v.cterm
-        hl(name, st)
+      if v.strikethrough then
+        st.strikethrough = true
       end
+      if v.reverse then
+        st.reverse = true
+      end
+      st.cterm = v.cterm
+      hl(name, st)
     end
   end
 end
