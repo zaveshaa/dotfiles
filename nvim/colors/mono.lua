@@ -1,16 +1,16 @@
 local M = {}
 
 local p = {
-  fg = "#1a1a1a",
-  bg = "#ffffff",
-  strong = "#333333",
-  mid = "#4a4a4a",
-  soft = "#6e6e6e",
-  dim = "#8a8a8a",
-  faint = "#adadad",
-  line = "#f2f2f2",
-  sel = "#dcdcdc",
-  sel2 = "#c4c4c4",
+  fg = "#e6e6e6",
+  bg = "#000000",
+  strong = "#ffffff",
+  mid = "#b0b0b0",
+  soft = "#8a8a8a",
+  dim = "#6e6e6e",
+  faint = "#333333",
+  line = "#141414",
+  sel = "#2f2f2f",
+  sel2 = "#3a3a3a",
   white = "#ffffff",
   black = "#000000",
 }
@@ -184,18 +184,18 @@ end
 
 local function base()
   vim.g.colors_name = "mono"
-  vim.opt.background = "light"
+  vim.opt.background = "dark"
 
   hl("Normal", { fg = p.fg, bg = p.bg })
   hl("NormalNC", { fg = p.fg, bg = p.bg })
   hl("NormalFloat", { fg = p.fg, bg = p.bg })
   hl("FloatBorder", { fg = p.dim, bg = p.bg })
   hl("FloatTitle", { fg = p.fg, bg = p.line, bold = true })
-  hl("Cursor", { fg = p.bg, bg = p.black })
-  hl("lCursor", { fg = p.bg, bg = p.black })
-  hl("TermCursor", { fg = p.bg, bg = p.black })
+  hl("Cursor", { fg = p.bg, bg = p.fg })
+  hl("lCursor", { fg = p.bg, bg = p.fg })
+  hl("TermCursor", { fg = p.bg, bg = p.fg })
   hl("TermCursorNC", { fg = p.bg, bg = p.dim })
-  hl("CursorLine", { bg = p.line })
+  hl("CursorLine", { bg = p.line, underline = false, undercurl = false })
   hl("CursorColumn", { bg = p.line })
   hl("ColorColumn", { bg = p.line })
   hl("CursorLineNr", { fg = p.fg, bold = true })
@@ -222,30 +222,30 @@ local function base()
 
   hl("Visual", { bg = p.sel })
   hl("VisualNOS", { bg = p.sel })
-  hl("Search", { fg = p.fg, bg = p.bg, bold = true })
-  hl("IncSearch", { fg = p.bg, bg = p.black, bold = true })
-  hl("CurSearch", { fg = p.bg, bg = p.black, bold = true })
+  hl("Search", { fg = p.bg, bg = p.dim, bold = true })
+  hl("IncSearch", { fg = p.bg, bg = p.fg, bold = true })
+  hl("CurSearch", { fg = p.bg, bg = p.fg, bold = true })
   hl("Substitute", { fg = p.fg, bg = p.sel, bold = true })
 
   hl("Pmenu", { fg = p.fg, bg = p.line })
-  hl("PmenuSel", { fg = p.bg, bg = p.black, bold = true })
+  hl("PmenuSel", { fg = p.bg, bg = p.fg, bold = true })
   hl("PmenuSbar", { bg = p.bg })
   hl("PmenuThumb", { bg = p.sel2 })
   hl("PmenuKind", { fg = p.dim })
   hl("PmenuExtra", { fg = p.dim })
   hl("PmenuMatch", { fg = p.fg, bold = true })
-  hl("PmenuMatchSel", { fg = p.bg, bg = p.black, bold = true })
+  hl("PmenuMatchSel", { fg = p.bg, bg = p.fg, bold = true })
   hl("WildMenu", { fg = p.fg, bg = p.line, bold = true })
   hl("ModeMsg", { fg = p.fg, bold = true })
   hl("MsgArea", { fg = p.fg, bg = p.bg })
   hl("MsgSeparator", { bg = p.bg })
-  hl("MoreMsg", { fg = p.fg })
-  hl("QuestionMsg", { fg = p.fg })
-  hl("WarningMsg", { fg = p.strong })
-  hl("ErrorMsg", { fg = p.strong, bold = true })
+  hl("MoreMsg", { fg = p.fg, bg = p.bg })
+  hl("Question", { fg = p.fg, bg = p.bg })
+  hl("WarningMsg", { fg = p.strong, bg = p.bg })
+  hl("ErrorMsg", { fg = p.strong, bg = p.bg, bold = true })
   hl("QuickFixLine", { bg = p.line, bold = true })
 
-  hl("DiffAdd", { bg = "#eeeeee" })
+  hl("DiffAdd", { bg = "#161616" })
   hl("DiffChange", { bg = p.sel })
   hl("DiffDelete", { bg = p.sel2 })
   hl("DiffText", { fg = p.fg, bg = p.sel2, bold = true })
@@ -253,9 +253,15 @@ local function base()
   hl("Changed", { fg = p.strong })
   hl("Removed", { fg = p.strong })
 
-  hl("MatchParen", { fg = p.strong, bold = true })
+  hl("MatchParen", { fg = p.strong, bg = p.sel, bold = true })
   hl("SpecialKey", { fg = p.dim })
-  hl("Title", { fg = p.fg, bold = true })
+  hl("Title", { fg = p.fg, bg = p.bg, bold = true })
+  hl("Directory", { fg = p.fg, bg = p.bg, bold = true })
+  hl("OkMsg", { fg = p.fg, bg = p.bg })
+  hl("ComplMatchIns", { fg = p.fg, bg = p.bg })
+  for _, g in ipairs({ "SpellBad", "SpellCap", "SpellRare", "SpellLocal" }) do
+    hl(g, { sp = p.dim, undercurl = true })
+  end
   hl("Bold", { bold = true })
   hl("Italic", { italic = true })
   hl("Underlined", { underline = true })
@@ -271,17 +277,17 @@ local function base()
 end
 
 -- монохромная шкала: 000000 -> 8a8a8a
-local dim = { fg = "#8a8a8a" } -- комментарии
+local dim = { fg = "#7a7a7a" } -- комментарии
 local soft = { fg = "#8a8a8a" } -- пунктуация
-local mid = { fg = "#4a4a4a" }
-local var = { fg = "#333333" }
-local key = { fg = "#000000", bold = true } -- ключевые слова — чистый чёрный
-local type_ = { fg = "#262626" }
-local str = { fg = "#6e6e6e" }
-local num = { fg = "#5c5c5c" }
-local fn = { fg = "#1a1a1a", bold = true }
-local deco = { fg = "#7a7a7a" }
-local ctrl = { fg = "#262626" }
+local mid = { fg = "#a0a0a0" }
+local var = { fg = "#c0c0c0" }
+local key = { fg = "#ffffff", bold = true } -- ключевые слова — чистый белый
+local type_ = { fg = "#d0d0d0" }
+local str = { fg = "#9a9a9a" }
+local num = { fg = "#b0b0b0" }
+local fn = { fg = "#e6e6e6", bold = true }
+local deco = { fg = "#8a8a8a" }
+local ctrl = { fg = "#d0d0d0" }
 local strong = { fg = p.strong }
 local under = { fg = p.fg, underline = true }
 
@@ -363,9 +369,9 @@ local function syntax()
     "@parameter.reference",
     "@none",
   }, mid)
-  hl("@comment.todo", { fg = "#4a4a4a" })
-  hl("@comment.error", { fg = "#000000", bold = true })
-  hl("@comment.warning", { fg = "#262626" })
+  hl("@comment.todo", { fg = "#8a8a8a" })
+  hl("@comment.error", { fg = "#ffffff", bold = true })
+  hl("@comment.warning", { fg = "#d0d0d0" })
 
   only({
     "@keyword",
@@ -405,7 +411,7 @@ local function syntax()
     "@string.special",
     "@character",
   }, str)
-  hl("@string.escape", { fg = "#4a4a4a" })
+  hl("@string.escape", { fg = "#8a8a8a" })
   only({
     "@constant",
     "@constant.builtin",
@@ -462,8 +468,8 @@ local function syntax()
   hl("Special", deco)
   hl("SpecialChar", deco)
   hl("Debug", ctrl)
-  hl("Todo", { fg = "#4a4a4a", bold = true })
-  hl("Error", { fg = "#000000", bold = true })
+  hl("Todo", { fg = "#8a8a8a", bold = true })
+  hl("Error", { fg = "#ffffff", bold = true })
 end
 
 local function lsp()
@@ -547,11 +553,11 @@ local function lsp()
   }, { fg = p.dim, strikethrough = false })
   hl("@lsp.mod.deprecated", { fg = p.dim, strikethrough = true })
 
-  hl("DiagnosticError", { fg = "#000000", bold = true })
-  hl("DiagnosticWarn", { fg = "#262626", bold = true })
-  hl("DiagnosticInfo", { fg = "#4a4a4a" })
-  hl("DiagnosticHint", { fg = "#6e6e6e" })
-  hl("DiagnosticOk", { fg = "#6e6e6e" })
+  hl("DiagnosticError", { fg = "#ffffff", bold = true })
+  hl("DiagnosticWarn", { fg = "#d0d0d0", bold = true })
+  hl("DiagnosticInfo", { fg = "#a0a0a0" })
+  hl("DiagnosticHint", { fg = "#8a8a8a" })
+  hl("DiagnosticOk", { fg = "#8a8a8a" })
   for _, g in ipairs({
     "DiagnosticUnnecessary",
     "DiagnosticDeprecated",
@@ -586,14 +592,14 @@ local function lsp()
     "DiagnosticFloatingError",
     "DiagnosticSignError",
     "DiagnosticUnderlineError",
-  }, { fg = "#000000", sp = "#000000" })
+  }, { fg = "#ffffff", sp = "#ffffff" })
   only({
     "DiagnosticVirtualTextWarn",
     "DiagnosticVirtualLinesWarn",
     "DiagnosticFloatingWarn",
     "DiagnosticSignWarn",
     "DiagnosticUnderlineWarn",
-  }, { fg = "#262626", sp = "#262626" })
+  }, { fg = "#d0d0d0", sp = "#d0d0d0" })
   for _, g in ipairs({
     "DiagnosticVirtualTextInfo",
     "DiagnosticVirtualLinesInfo",
@@ -601,7 +607,7 @@ local function lsp()
     "DiagnosticSignInfo",
     "DiagnosticUnderlineInfo",
   }) do
-    hl(g, { fg = "#4a4a4a", sp = "#4a4a4a" })
+    hl(g, { fg = "#a0a0a0", sp = "#a0a0a0" })
   end
   for _, g in ipairs({
     "DiagnosticVirtualTextHint",
@@ -615,14 +621,14 @@ local function lsp()
     "DiagnosticSignOk",
     "DiagnosticUnderlineOk",
   }) do
-    hl(g, { fg = "#6e6e6e", sp = "#6e6e6e" })
+    hl(g, { fg = "#8a8a8a", sp = "#8a8a8a" })
   end
   hl("LspCodeLens", { fg = p.dim })
   hl("LspInlayHint", { fg = p.dim, italic = true })
   hl("LspInfoList", { fg = p.fg })
   hl("LspReferenceText", { bg = p.line })
   hl("LspReferenceRead", { bg = p.line })
-  hl("LspSignatureActiveParameter", { fg = "#262626" })
+  hl("LspSignatureActiveParameter", { fg = "#d0d0d0" })
   hl("LspCodeLensSeparator", { fg = p.dim })
   hl("LspInfoBorder", { fg = p.fg, bg = p.bg })
 end
@@ -640,10 +646,10 @@ local function plugins()
     "LineNrBelowCursorLine",
   }, p.dim)
 
-  only({ "GitSignsAdd", "GitSignsAddNr" }, { fg = "#4a4a4a", bold = true })
-  only({ "GitSignsChange", "GitSignsChangeNr" }, { fg = "#262626", bold = true })
-  only({ "GitSignsDelete", "GitSignsDeleteNr" }, { fg = "#000000", bold = true })
-  only({ "GitSignsUntracked", "GitSignsUntrackedNr" }, { fg = "#6e6e6e", bold = true })
+  only({ "GitSignsAdd", "GitSignsAddNr" }, { fg = "#a0a0a0", bold = true })
+  only({ "GitSignsChange", "GitSignsChangeNr" }, { fg = "#d0d0d0", bold = true })
+  only({ "GitSignsDelete", "GitSignsDeleteNr" }, { fg = "#ffffff", bold = true })
+  only({ "GitSignsUntracked", "GitSignsUntrackedNr" }, { fg = "#8a8a8a", bold = true })
   flat({ "GitSignsAddLn", "GitSignsChangeLn", "GitSignsDeleteLn", "GitSignsCurrentLineBlame" }, p.dim)
 
   for name in pairs(vim.api.nvim_get_hl(0, {})) do
@@ -754,12 +760,12 @@ local function plugins()
     for name in pairs(vim.api.nvim_get_hl(0, {})) do
       if name:match("^" .. prefix) then
         local cur = vim.api.nvim_get_hl(0, { name = name })
-        local st = { fg = p.fg }
+        local st = { fg = p.fg, bg = p.bg }
         st.bold = cur.bold or nil
         st.italic = cur.italic or nil
         st.underline = cur.underline or nil
         if cur.sp then
-          st.sp = type(cur.sp) == "table" and cur.sp[1] or cur.sp
+          st.sp = p.dim
         end
         st.cterm = cur.cterm
         st.link = nil

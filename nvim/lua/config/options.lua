@@ -2,3 +2,6 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 vim.opt.guifont = "BigBlueTermPlus Nerd Font Mono:h14"
+for _, opt in ipairs({ "tabstop", "shiftwidth", "softtabstop" }) do
+  vim.opt[opt] = 4
+end
