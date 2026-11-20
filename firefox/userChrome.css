@@ -1,52 +1,174 @@
-* {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+:root {
+  color-scheme: light !important;
+  --tab-min-height: 26px !important;
+  --tab-block-margin: 0px !important;
 }
 
-.tab-close-button {
-    display: flex !important;
+* { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; }
+
+#navigator-toolbox,
+#TabsToolbar,
+#nav-bar,
+toolbar,
+#PersonalToolbar,
+#urlbar-background {
+  background-image: none !important;
+  background-color: #f0f0f0 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+#urlbar-background { background-color: #ffffff !important; }
+
+.titlebar-spacer[type="pre-tabs"],
+.titlebar-spacer[type="post-tabs"] {
+  display: none !important;
+}
+
+#tabbrowser-tabs {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border-inline-start: 0 !important;
+  margin: 0 !important;
+  padding-inline: 0 !important;
+}
+#tabbrowser-arrowscrollbox {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+#tabbrowser-arrowscrollbox::part(scrollbox) {
+  display: flex !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+#pinned-tabs-container {
+  margin-inline: 0 !important;
+  padding-inline: 0 !important;
+  border-inline-end: 0 !important;
 }
 
 #TabsToolbar .titlebar-buttonbox-container,
+#TabsToolbar .titlebar-spacer,
 #alltabs-button,
-#tabbrowser-arrowscrollbox-pertab {
-    display: none !important;
+#new-tab-button,
+#tabs-newtab-button,
+.tab-close-button,
+.tabbrowser-tab .tab-secondary-label,
+#scrollbutton-up,
+#scrollbutton-down,
+.private-browsing-indicator-with-label {
+  display: none !important;
 }
 
-#urlbar-container {
-    max-width: unset !important;
-    margin: 4px 8px !important;
-    width: auto !important;
-    flex-grow: 1 !important;
+.tabbrowser-tab,
+.tabbrowser-tab[fadein]:not([pinned]) {
+  visibility: visible !important;
+  display: flex !important;
+  flex: 1 1 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: var(--tab-min-height) !important;
+  padding-inline: 0 !important;
+  margin: 0 !important;
+  font-size: 11px !important;
 }
+.tab-background {
+  margin-block: 0 !important;
+  border-radius: 0 !important;
+  background-image: none !important;
+  background-color: #e0e0e0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  min-height: var(--tab-min-height) !important;
+}
+.tabbrowser-tab[selected] .tab-background,
+.tabbrowser-tab[multiselected] .tab-background {
+  background-color: #ffffff !important;
+}
+
+.tab-icon-stack,
+.tab-icon-image,
+.tab-throbber,
+.tab-icon-pending,
+.tab-sharing-icon-overlay,
+.tab-icon-overlay {
+  display: none !important;
+}
+
+.tab-content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 8px !important;
+  min-height: var(--tab-min-height) !important;
+  width: 100% !important;
+  color: #111 !important;
+}
+.tab-label-container {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  mask-image: none !important;
+  text-align: center !important;
+}
+.tab-label-container[textoverflow]:not([pinned]) {
+  mask-image: none !important;
+}
+.tab-label,
+.tab-text {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  text-align: center !important;
+  color: #111 !important;
+  opacity: 1 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.tab-secondary-label {
+  display: none !important;
+}
+
+#nav-bar-customization-target > :not(#urlbar-container) {
+  display: none !important;
+}
+
+#nav-bar { min-height: 28px !important; padding-block: 0 !important; }
+#urlbar-container { margin: 0 4px !important; padding-block: 1px !important; min-width: 0 !important; --urlbar-container-height: 28px !important; }
+#urlbar { min-height: 24px !important; font-size: 12px !important; }
 
 #identity-box,
-#identity-permission-box,
-.urlbar-icon-wrapper[id*="identity"] {
-    display: none !important;
-}
-
-#forward-button,
-#stop-button,
-#home-button,
 #tracking-protection-icon-container,
-#pageActionButton,
-#star-button-box,
-#reader-mode-button,
-#PanelUI-menu-button,
-#nav-bar-overflow-button,
-#PersonalToolbar {
-    display: none !important;
-}
-
-#unified-extensions-button {
-    display: flex !important;
-    margin-right: 4px !important;
+#page-action-buttons,
+.urlbar-page-action,
+#urlbar-go-button,
+#picture-in-picture-button,
+#notification-popup-box {
+  display: none !important;
 }
 
 #urlbar .urlbarView,
-#urlbar-results,
-.urlbarView-results,
-.urlbarView-row,
-#urlbar-popups {
-    display: none !important;
+.urlbarView,
+#urlbar-results {
+  display: none !important;
+}
+
+#PersonalToolbar,
+#toolbar-menubar,
+#statuspanel,
+#sidebar-header,
+#nav-bar-overflow-button {
+  display: none !important;
 }
