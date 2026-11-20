@@ -1,14 +1,14 @@
-set background=dark
+set background=light
 let g:colors_name = 'mono'
 
-let s:fg   = 'guifg=#e6e6e6 ctermfg=7'
-let s:dim  = 'guifg=#7a7a7a ctermfg=8'
-let s:strong = 'guifg=#ffffff ctermfg=15'
-let s:bg   = 'guibg=#000000 ctermbg=0'
-let s:lbg  = 'guibg=#141414 ctermbg=0'
-let s:mbg  = 'guibg=#1a1a1a ctermbg=0'
-let s:sel  = 'guibg=#2f2f2f ctermbg=8'
-let s:inv  = 'guifg=#000000 guibg=#e6e6e6 ctermfg=0 ctermbg=7'
+let s:fg   = 'guifg=#1a1a1a ctermfg=0'
+let s:dim  = 'guifg=#6e6e6e ctermfg=8'
+let s:strong = 'guifg=#000000 ctermfg=0'
+let s:bg   = 'guibg=#ffffff ctermbg=15'
+let s:lbg  = 'guibg=#f2f2f2 ctermbg=7'
+let s:mbg  = 'guibg=#f2f2f2 ctermbg=7'
+let s:sel  = 'guibg=#dcdcdc ctermbg=7'
+let s:inv  = 'guifg=#ffffff guibg=#000000 ctermfg=15 ctermbg=0'
 
 execute 'hi Normal        ' . s:fg . ' ' . s:bg
 execute 'hi NormalNC      ' . s:fg . ' ' . s:bg
@@ -64,9 +64,9 @@ execute 'hi Question      ' . s:fg . ' ' . s:bg . ' term=NONE gui=NONE cterm=NON
 execute 'hi WarningMsg    ' . s:strong . ' ' . s:bg . ' term=NONE gui=NONE cterm=NONE'
 execute 'hi ErrorMsg      ' . s:strong . ' ' . s:bg . ' gui=bold cterm=bold'
 
-execute 'hi DiffAdd       ' . s:fg . ' guibg=#161616 ctermbg=0 term=NONE gui=NONE cterm=NONE'
-execute 'hi DiffChange    ' . s:fg . ' guibg=#262626 ctermbg=8 term=NONE gui=NONE cterm=NONE'
-execute 'hi DiffDelete    ' . s:fg . ' guibg=#303030 ctermbg=8 term=NONE gui=NONE cterm=NONE'
+execute 'hi DiffAdd       ' . s:fg . ' guibg=#eeeeee ctermbg=7 term=NONE gui=NONE cterm=NONE'
+execute 'hi DiffChange    ' . s:fg . ' guibg=#e6e6e6 ctermbg=7 term=NONE gui=NONE cterm=NONE'
+execute 'hi DiffDelete    ' . s:fg . ' guibg=#dcdcdc ctermbg=7 term=NONE gui=NONE cterm=NONE'
 execute 'hi DiffText      ' . s:strong . ' ' . s:sel . ' gui=bold cterm=bold'
 execute 'hi diffAdded     ' . s:strong
 execute 'hi diffChanged   ' . s:strong
@@ -90,10 +90,10 @@ execute 'hi Title         ' . s:fg . ' ' . s:bg . ' gui=bold cterm=bold'
 execute 'hi Added         ' . s:strong . ' ' . s:bg
 execute 'hi Changed       ' . s:strong . ' ' . s:bg
 execute 'hi Removed       ' . s:strong . ' ' . s:bg
-execute 'hi SpellBad      term=NONE guisp=#8a8a8a guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=undercurl cterm=underline'
-execute 'hi SpellCap      term=NONE guisp=#8a8a8a guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=undercurl cterm=underline'
-execute 'hi SpellRare     term=NONE guisp=#8a8a8a guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=undercurl cterm=underline'
-execute 'hi SpellLocal    term=NONE guisp=#8a8a8a guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=undercurl cterm=underline'
+execute 'hi SpellBad      term=NONE guisp=#6e6e6e guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=undercurl cterm=underline'
+execute 'hi SpellCap      term=NONE guisp=#6e6e6e guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=undercurl cterm=underline'
+execute 'hi SpellRare     term=NONE guisp=#6e6e6e guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=undercurl cterm=underline'
+execute 'hi SpellLocal    term=NONE guisp=#6e6e6e guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=undercurl cterm=underline'
 execute 'hi OkMsg         ' . s:fg . ' ' . s:bg
 execute 'hi ComplMatchIns ' . s:fg . ' ' . s:bg
 

@@ -5,32 +5,32 @@ function! s:mono(groups, attrs) abort
   endfor
 endfunction
 
-call s:mono(['Comment', 'SpecialComment'], 'guifg=#7a7a7a ctermfg=8')
+call s:mono(['Comment', 'SpecialComment'], 'guifg=#6e6e6e ctermfg=8')
 
 call s:mono([
       \ 'Statement', 'Conditional', 'Repeat', 'Label', 'Operator', 'Keyword',
       \ 'Exception', 'PreCondit', 'Include', 'Define', 'Macro',
-      \ ], 'gui=bold cterm=bold guifg=#ffffff ctermfg=15')
+      \ ], 'gui=bold cterm=bold guifg=#000000 ctermfg=0')
 
 call s:mono([
       \ 'Type', 'StorageClass', 'Structure', 'Typedef', 'PreProc',
-      \ ], 'gui=NONE cterm=NONE guifg=#d0d0d0 ctermfg=7')
+      \ ], 'gui=NONE cterm=NONE guifg=#1f1f1f ctermfg=0')
 
 call s:mono([
       \ 'Constant', 'Boolean',
-      \ ], 'gui=NONE cterm=NONE guifg=#b0b0b0 ctermfg=7')
+      \ ], 'gui=NONE cterm=NONE guifg=#2e2e2e ctermfg=0')
 call s:mono([
       \ 'String', 'Character',
-      \ ], 'gui=NONE cterm=NONE guifg=#9a9a9a ctermfg=7')
+      \ ], 'gui=NONE cterm=NONE guifg=#4a4a4a ctermfg=0')
 call s:mono([
       \ 'Number', 'Float',
-      \ ], 'gui=NONE cterm=NONE guifg=#b0b0b0 ctermfg=7')
+      \ ], 'gui=NONE cterm=NONE guifg=#2e2e2e ctermfg=0')
 
-call s:mono(['Function', 'FunctionKey'], 'gui=bold cterm=bold guifg=#e6e6e6 ctermfg=7')
-call s:mono(['Identifier', 'Underlined'], 'gui=NONE cterm=NONE guifg=#c0c0c0 ctermfg=7')
+call s:mono(['Function', 'FunctionKey'], 'gui=bold cterm=bold guifg=#111111 ctermfg=0')
+call s:mono(['Identifier', 'Underlined'], 'gui=NONE cterm=NONE guifg=#333333 ctermfg=0')
 
-call s:mono(['Special', 'SpecialChar', 'Debug'], 'guifg=#8a8a8a ctermfg=8')
+call s:mono(['Special', 'SpecialChar', 'Debug'], 'guifg=#6e6e6e ctermfg=8')
 
-call s:mono(['Todo', 'Error'], 'gui=bold cterm=bold guifg=#ffffff ctermfg=15')
+call s:mono(['Todo', 'Error'], 'gui=bold cterm=bold guifg=#000000 ctermfg=0')
 
 delfunction s:mono
