@@ -25,14 +25,21 @@ user_pref("browser.contentblocking.category", "standard");
 user_pref("browser.download.always_ask_before_handling_new_types", true);
 user_pref("browser.newtabpage.activity-stream.feeds.topsites", false);
 user_pref("browser.newtabpage.activity-stream.widgets.sportsWidget.enabled", false);
-user_pref("browser.search.region", "RU");
+// Google is in the installed engine list. RU region expects Yandex, which is not
+// installed, leaving no default engine and making Enter treat input as a hostname.
+user_pref("browser.search.region", "US");
 user_pref("browser.urlbar.placeholderName", "Google");
 user_pref("browser.urlbar.placeholderName.private", "Google");
 user_pref("dom.forms.autocomplete.formautofill", true);
-user_pref("extensions.activeThemeID", "firefox-compact-light@mozilla.org");
+user_pref("extensions.activeThemeID", "firefox-compact-dark@mozilla.org");
 user_pref("extensions.pictureinpicture.enable_picture_in_picture_overrides", true);
 user_pref("intl.locale.requested", "en-US,ru");
-user_pref("layout.css.prefers-color-scheme.content-override", 1);
+user_pref("layout.css.prefers-color-scheme.content-override", 0);
+// This profile had DoH rollout self-enabled, but system DNS works and IPv6 is
+// broken here (curl -6 fails). Use native DNS/IPv4 only to avoid dnsNotFound.
+user_pref("doh-rollout.mode", 0);
+user_pref("network.trr.mode", 5);
+user_pref("network.dns.disableIPv6", true);
 user_pref("network.dns.disablePrefetch", true);
 user_pref("network.http.speculative-parallel-limit", 0);
 user_pref("network.prefetch-next", false);

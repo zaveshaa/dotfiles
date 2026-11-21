@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light !important;
+  color-scheme: dark !important;
   --tab-min-height: 26px !important;
   --tab-block-margin: 0px !important;
 }
@@ -13,11 +13,11 @@ toolbar,
 #PersonalToolbar,
 #urlbar-background {
   background-image: none !important;
-  background-color: #f0f0f0 !important;
+  background-color: #111111 !important;
   box-shadow: none !important;
   border: none !important;
 }
-#urlbar-background { background-color: #ffffff !important; }
+#urlbar-background { background-color: #1a1a1a !important; }
 
 .titlebar-spacer[type="pre-tabs"],
 .titlebar-spacer[type="post-tabs"] {
@@ -49,7 +49,9 @@ toolbar,
   border-inline-end: 0 !important;
 }
 
-#TabsToolbar .titlebar-buttonbox-container,
+/* Keep the window controls: with browser.tabs.closeWindowWithLastTab=false,
+   Ctrl+W on the last tab does nothing, so they are the only way to close
+   the window (i3 does not draw decorations for Firefox). */
 #TabsToolbar .titlebar-spacer,
 #alltabs-button,
 #new-tab-button,
@@ -62,7 +64,9 @@ toolbar,
   display: none !important;
 }
 
-.tabbrowser-tab,
+/* Style only fully opened tabs. Firefox collapses a closing tab by removing
+   [fadein] (and hides it via [hidden]/[collapsed]); forcing visibility or
+   max-width on tabs without [fadein] leaves closed tabs stuck in the bar. */
 .tabbrowser-tab[fadein]:not([pinned]) {
   visibility: visible !important;
   display: flex !important;
@@ -79,14 +83,14 @@ toolbar,
   margin-block: 0 !important;
   border-radius: 0 !important;
   background-image: none !important;
-  background-color: #e0e0e0 !important;
+  background-color: #1a1a1a !important;
   box-shadow: none !important;
   border: none !important;
   min-height: var(--tab-min-height) !important;
 }
 .tabbrowser-tab[selected] .tab-background,
 .tabbrowser-tab[multiselected] .tab-background {
-  background-color: #ffffff !important;
+  background-color: #2b2b2b !important;
 }
 
 .tab-icon-stack,
@@ -105,7 +109,7 @@ toolbar,
   padding: 0 8px !important;
   min-height: var(--tab-min-height) !important;
   width: 100% !important;
-  color: #111 !important;
+  color: #e6e6e6 !important;
 }
 .tab-label-container {
   display: flex !important;
@@ -131,7 +135,7 @@ toolbar,
   max-width: 100% !important;
   margin: 0 !important;
   text-align: center !important;
-  color: #111 !important;
+  color: #e6e6e6 !important;
   opacity: 1 !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -147,15 +151,17 @@ toolbar,
 
 #nav-bar { min-height: 28px !important; padding-block: 0 !important; }
 #urlbar-container { margin: 0 4px !important; padding-block: 1px !important; min-width: 0 !important; --urlbar-container-height: 28px !important; }
-#urlbar { min-height: 24px !important; font-size: 12px !important; }
+#urlbar { min-height: 24px !important; font-size: 12px !important; color: #e6e6e6 !important; }
+#urlbar-input { color: #e6e6e6 !important; }
 
+/* Keep #notification-popup-box: Firefox hides it when it has no icons, but it
+   must be visible for camera/mic/popup-blocked permission prompts. */
 #identity-box,
 #tracking-protection-icon-container,
 #page-action-buttons,
 .urlbar-page-action,
 #urlbar-go-button,
-#picture-in-picture-button,
-#notification-popup-box {
+#picture-in-picture-button {
   display: none !important;
 }
 
