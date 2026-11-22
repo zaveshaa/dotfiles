@@ -76,25 +76,15 @@
        ((< hours 24) (format "%d hr ago" hours))
        (t (format "%d day%s ago" days (if (= days 1) "" "s")))))))
 
-(defvar my/sync--pending 0
-  "Number of sync pull operations currently in flight.")
-
-(defun my/sync--update-display ()
-  "Redraw the home buffer if visible."
+(defun my/sync--update-status ()
+  "Refresh `my/sync-status' and redraw the home buffer if visible."
+  (setq my/sync-status (my/sync--ago-string my/sync-last-fetch))
   (when (and (fboundp 'my/home-refresh)
              (get-buffer "*home*")
              (get-buffer-window "*home*" t))
     (with-current-buffer "*home*"
       (when (derived-mode-p 'my/home-mode)
         (my/home-refresh)))))
-
-(defun my/sync--update-status ()
-  "Refresh `my/sync-status' and redraw the home buffer if visible."
-  (setq my/sync-status
-        (if (> my/sync--pending 0)
-            "pending"
-          (my/sync--ago-string my/sync-last-fetch)))
-  (my/sync--update-display))
 
 (defvar my/sync--status-timer nil)
 
@@ -149,14 +139,12 @@
 (defun my/sync-pull-all ()
   "Pull dotfiles and journal repositories asynchronously."
   (interactive)
-  (setq my/sync--pending 2
-        my/sync-status "pending")
-  (my/sync--update-display)
-  (let ((any-ok nil)
+  (let ((pending 2)
+        (any-ok nil)
         (done (lambda (ok)
                 (when ok (setq any-ok t))
-                (setq my/sync--pending (max 0 (1- my/sync--pending)))
-                (when (<= my/sync--pending 0)
+                (setq pending (1- pending))
+                (when (<= pending 0)
                   (when any-ok
                     (setq my/sync-last-fetch (current-time)))
                   (my/sync--update-status)))))
