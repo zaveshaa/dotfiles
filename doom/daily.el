@@ -554,9 +554,7 @@
 ;; sync: replace with yours
 (defun my/journal-sync-manual ()
   (interactive)
-  (if (fboundp 'my/sync-pull-journal)
-      (my/sync-pull-journal)
-    (message "sync: not configured")))
+  (message "sync: stub"))
 
 ;;; Home buffer
 
@@ -597,12 +595,8 @@
                    "\n[ \t]*\\'" ""
                    (my/home--columns (my/heatmap-string) right 4)))
          (width (apply #'max 0
-                       (mapcar #'string-width (split-string columns "\n"))))
-         (sync (if (boundp 'my/sync-status) my/sync-status "never"))
-         (sync-line (if (string-match-p "fetching" sync)
-                        (concat "  " sync)
-                      (concat "  fetched " sync))))
-    (concat columns "\n\n" sync-line "\n\n" (my/daily-report width))))
+                       (mapcar #'string-width (split-string columns "\n")))))
+    (concat columns "\n\n\n" (my/daily-report width))))
 
 (defun my/home--center (text)
   "Insert TEXT horizontally and vertically centered in the window."
