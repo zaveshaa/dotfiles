@@ -554,8 +554,8 @@
 ;; sync: replace with yours
 (defun my/journal-sync-manual ()
   (interactive)
-  (if (fboundp 'my/sync-pull-all)
-      (my/sync-pull-all)
+  (if (fboundp 'my/sync-pull-journal)
+      (my/sync-pull-journal)
     (message "sync: not configured")))
 
 ;;; Home buffer

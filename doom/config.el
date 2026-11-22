@@ -136,21 +136,17 @@
                   (kill-buffer (process-buffer proc)))
                 (message "sync[%s] sentinel error: %S" label err)))))))))
 
-(defun my/sync-pull-all ()
-  "Pull dotfiles and journal repositories asynchronously."
+(defun my/sync-pull-journal ()
+  "Pull journal repository asynchronously."
   (interactive)
-  (let ((pending 2)
-        (any-ok nil)
-        (done (lambda (ok)
-                (when ok (setq any-ok t))
-                (setq pending (1- pending))
-                (when (<= pending 0)
-                  (when any-ok
-                    (setq my/sync-last-fetch (current-time)))
-                  (my/sync--update-status)))))
-    (my/sync--pull-repo (expand-file-name "~/dotfiles") "dotfiles" done)
-    (my/sync--pull-repo (expand-file-name "~/journal") "journal" done)
-    (my/sync--start-status-timer)))
+  (my/sync--pull-repo
+   (expand-file-name "~/journal")
+   "journal"
+   (lambda (ok)
+     (when ok
+       (setq my/sync-last-fetch (current-time)))
+     (my/sync--update-status)))
+  (my/sync--start-status-timer))
 
 (defun my/sync-push-journal ()
   "Push journal repository on Emacs exit."
@@ -166,5 +162,5 @@
               (message "sync[journal] push failed: %s"
                        (string-trim (buffer-string))))))))))
 
-(add-hook 'emacs-startup-hook #'my/sync-pull-all)
+(add-hook 'emacs-startup-hook #'my/sync-pull-journal)
 (add-hook 'kill-emacs-hook #'my/sync-push-journal)
