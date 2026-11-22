@@ -144,7 +144,8 @@
                (error
                 (when (buffer-live-p (process-buffer proc))
                   (kill-buffer (process-buffer proc)))
-                (message "sync[%s] sentinel error: %S" label err)))))))))
+                (message "sync[%s] sentinel error: %S" label err)
+                (ignore-errors (funcall on-done nil))))))))))
 
 (defun my/sync--commit-journal-if-dirty (root)
   "Commit all journal changes in ROOT when dirty."
@@ -204,5 +205,6 @@
                        (string-trim (buffer-string))))))))))
 
 (add-hook 'emacs-startup-hook #'my/sync-pull-journal)
+(add-hook 'emacs-startup-hook (lambda () (run-with-timer 2 nil #'my/sync-pull-journal)))
 (add-hook 'after-init-hook #'my/sync-pull-journal)
 (add-hook 'kill-emacs-hook #'my/sync-push-journal)
