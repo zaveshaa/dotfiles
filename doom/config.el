@@ -62,6 +62,9 @@
 (defvar my/sync-status "never"
   "Human-readable sync status for the home buffer.")
 
+(defvar my/sync--fetching nil
+  "Non-nil while a journal sync is in progress.")
+
 (defun my/sync--ago-string (time)
   "Return a human-readable age for TIME."
   (if (not time)
@@ -76,15 +79,22 @@
        ((< hours 24) (format "%d hr ago" hours))
        (t (format "%d day%s ago" days (if (= days 1) "" "s")))))))
 
-(defun my/sync--update-status ()
-  "Refresh `my/sync-status' and redraw the home buffer if visible."
-  (setq my/sync-status (my/sync--ago-string my/sync-last-fetch))
+(defun my/sync--refresh-home ()
+  "Redraw the home buffer if visible."
   (when (and (fboundp 'my/home-refresh)
              (get-buffer "*home*")
              (get-buffer-window "*home*" t))
     (with-current-buffer "*home*"
       (when (derived-mode-p 'my/home-mode)
         (my/home-refresh)))))
+
+(defun my/sync--update-status ()
+  "Refresh `my/sync-status' and redraw the home buffer if visible."
+  (setq my/sync-status
+        (if my/sync--fetching
+            "fetching journal..."
+          (my/sync--ago-string my/sync-last-fetch)))
+  (my/sync--refresh-home))
 
 (defvar my/sync--status-timer nil)
 
@@ -139,10 +149,13 @@
 (defun my/sync-pull-journal ()
   "Pull journal repository asynchronously."
   (interactive)
+  (setq my/sync--fetching t)
+  (my/sync--update-status)
   (my/sync--pull-repo
    (expand-file-name "~/journal")
    "journal"
    (lambda (ok)
+     (setq my/sync--fetching nil)
      (when ok
        (setq my/sync-last-fetch (current-time)))
      (my/sync--update-status)))

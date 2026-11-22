@@ -598,8 +598,11 @@
                    (my/home--columns (my/heatmap-string) right 4)))
          (width (apply #'max 0
                        (mapcar #'string-width (split-string columns "\n"))))
-         (sync (if (boundp 'my/sync-status) my/sync-status "never")))
-    (concat columns "\n\n  fetched " sync "\n\n" (my/daily-report width))))
+         (sync (if (boundp 'my/sync-status) my/sync-status "never"))
+         (sync-line (if (string-match-p "fetching" sync)
+                        (concat "  " sync)
+                      (concat "  fetched " sync))))
+    (concat columns "\n\n" sync-line "\n\n" (my/daily-report width))))
 
 (defun my/home--center (text)
   "Insert TEXT horizontally and vertically centered in the window."
