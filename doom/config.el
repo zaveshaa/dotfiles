@@ -126,7 +126,7 @@
         (make-process
          :name (format "sync-pull-%s" label)
          :buffer buf
-         :command (list "git" "pull" "--ff-only")
+         :command (list "git" "pull" "--rebase")
          :sentinel
          (lambda (proc _event)
            (when (memq (process-status proc) '(exit signal))
@@ -146,29 +146,57 @@
                   (kill-buffer (process-buffer proc)))
                 (message "sync[%s] sentinel error: %S" label err)))))))))
 
+(defun my/sync--commit-journal-if-dirty (root)
+  "Commit all journal changes in ROOT when dirty."
+  (let ((default-directory (file-name-as-directory root)))
+    (with-temp-buffer
+      (process-file "git" nil t nil "add" "-A")
+      (erase-buffer)
+      (let ((status (process-file "git" nil t nil "status" "--porcelain")))
+        (when (and (eq status 0)
+                   (not (string-empty-p (string-trim (buffer-string)))))
+          (erase-buffer)
+          (process-file "git" nil t nil "commit" "-m"
+                        (format "journal: sync %s"
+                                (format-time-string "%Y-%m-%d %H:%M"))))))))
+
 (defun my/sync-pull-journal ()
   "Pull journal repository asynchronously."
   (interactive)
-  (setq my/sync--fetching t)
-  (my/sync--update-status)
-  (my/sync--pull-repo
-   (expand-file-name "~/journal")
-   "journal"
-   (lambda (ok)
-     (setq my/sync--fetching nil)
-     (when ok
-       (setq my/sync-last-fetch (current-time)))
-     (my/sync--update-status)))
-  (my/sync--start-status-timer))
+  (unless my/sync--fetching
+    (let ((root (my/sync--repo-root (expand-file-name "~/journal"))))
+      (when root
+        (my/sync--commit-journal-if-dirty root)))
+    (setq my/sync--fetching t)
+    (my/sync--update-status)
+    (my/sync--pull-repo
+     (expand-file-name "~/journal")
+     "journal"
+     (lambda (ok)
+       (setq my/sync--fetching nil)
+       (when ok
+         (setq my/sync-last-fetch (current-time)))
+       (my/sync--update-status)))
+    (my/sync--start-status-timer)))
 
 (defun my/sync-push-journal ()
-  "Push journal repository on Emacs exit."
+  "Commit and push journal repository on Emacs exit."
   (let* ((dir (expand-file-name "~/journal"))
          (root (my/sync--repo-root dir)))
     (when root
       (let ((default-directory (file-name-as-directory root)))
         (message "sync[journal]: pushing...")
         (with-temp-buffer
+          (process-file "git" nil t nil "add" "-A")
+          (erase-buffer)
+          (let ((status (process-file "git" nil t nil "status" "--porcelain")))
+            (when (and (eq status 0)
+                       (not (string-empty-p (string-trim (buffer-string)))))
+              (erase-buffer)
+              (process-file "git" nil t nil "commit" "-m"
+                            (format "journal: sync %s"
+                                    (format-time-string "%Y-%m-%d %H:%M")))))
+          (erase-buffer)
           (let ((exit (process-file "git" nil t nil "push")))
             (if (eq exit 0)
                 (message "sync[journal]: pushed")
@@ -176,4 +204,5 @@
                        (string-trim (buffer-string))))))))))
 
 (add-hook 'emacs-startup-hook #'my/sync-pull-journal)
+(add-hook 'after-init-hook #'my/sync-pull-journal)
 (add-hook 'kill-emacs-hook #'my/sync-push-journal)
