@@ -236,13 +236,15 @@
 
 (defun my/home--body ()
   "Return the full text of the home menu."
-  (concat
-   (format "  Journal — %s\n" (format-time-string "%Y-%m-%d %A"))
-   (my/cal-header my/cal-month my/cal-year)
-   (my/cal-table my/cal-month my/cal-year)
-   "  [ 5] selected day    * 5* today\n"
-   "\n  ←/→ day   ↑/↓ week   h/l month   RET open day   n today   m menu\n"
-   "  w homework   p projects   t todo   a agenda   d folder   f file   q quit\n"))
+  (let ((sync (if (boundp 'my/sync-status) my/sync-status "never")))
+    (concat
+     (format "  Journal — %s\n" (format-time-string "%Y-%m-%d %A"))
+     (format "  fetched %s\n" sync)
+     (my/cal-header my/cal-month my/cal-year)
+     (my/cal-table my/cal-month my/cal-year)
+     "  [ 5] selected day    * 5* today\n"
+     "\n  ←/→ day   ↑/↓ week   h/l month   RET open day   n today   m menu\n"
+     "  w homework   p projects   t todo   a agenda   d folder   f file   q quit\n")))
 
 (defun my/home--center (text)
   "Insert TEXT horizontally and vertically centered in the window."
