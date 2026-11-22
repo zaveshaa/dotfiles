@@ -120,15 +120,21 @@
          :sentinel
          (lambda (proc _event)
            (when (memq (process-status proc) '(exit signal))
-             (let ((ok (and (eq (process-status proc) 'exit)
-                            (= (process-exit-status proc) 0)))
-                   (out (with-current-buffer (process-buffer proc)
-                          (buffer-string))))
-               (if ok
-                   (message "sync[%s]: %s" label (string-trim out))
-                 (message "sync[%s] failed: %s" label (string-trim out)))
-               (kill-buffer (process-buffer proc))
-               (funcall on-done ok)))))))))
+             (condition-case err
+                 (let ((ok (and (eq (process-status proc) 'exit)
+                                (= (process-exit-status proc) 0)))
+                       (out (with-current-buffer (process-buffer proc)
+                              (buffer-string))))
+                   (if ok
+                       (message "sync[%s]: %s" label (string-trim out))
+                     (message "sync[%s] failed: %s" label (string-trim out)))
+                   (when (buffer-live-p (process-buffer proc))
+                     (kill-buffer (process-buffer proc)))
+                   (funcall on-done ok))
+               (error
+                (when (buffer-live-p (process-buffer proc))
+                  (kill-buffer (process-buffer proc)))
+                (message "sync[%s] sentinel error: %S" label err)))))))))
 
 (defun my/sync-pull-all ()
   "Pull dotfiles and journal repositories asynchronously."
